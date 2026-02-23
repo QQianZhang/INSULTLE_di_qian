@@ -13,7 +13,7 @@ Altezza_Schermo = 745
 schermo = pygame.display.set_mode((Larghezza_Schermo, Altezza_Schermo)) 
 pygame.display.set_caption("Insultle") 
 
-imgSfondo = pygame.image.load("sfondoINSULTLE.jpg")           
+imgSfondo = pygame.image.load("sfondoINSULTLE.jpg")
 imgSfondo = pygame.transform.scale(imgSfondo,(Larghezza_Schermo,Altezza_Schermo))
 
 FontLettere = pygame.font.SysFont('Impact', 60)
