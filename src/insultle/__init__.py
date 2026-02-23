@@ -61,7 +61,7 @@ while running:
         
         colonna = x % 5 #in base al resto della divisione scelgo la colonna, quando è x = 0 (prima lettera) il resto sarà 0 e la colonna 0 (la prima),
                         #quando sarà 5 (sesta lettera) il resto sarà 0 e la colonna 0 (ma della seconda riga)
-        riga = x // 5
+        riga = x // 5   
 
         coordinataX = 200 + colonna * 92
         coordinataY = 20 + riga * 77 
@@ -76,12 +76,12 @@ while running:
                 file.write("Partita vinta!\n")
                 file.close()
                 pygame.quit()
-            else:
-                print("Hai perso...")
+        else:
+                #print("Hai perso...") Edoardo: Appena si inserisce una lettera scrive continuamente "Hai perso"
                 file = open("FileVincite.py", "a")
                 file.write("Partita persa!\n")
                 file.close()
         
-        pygame.display.flip()
+    pygame.display.flip()
         
 pygame.quit()
