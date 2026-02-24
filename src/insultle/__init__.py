@@ -70,6 +70,11 @@ while running:
         schermo.blit(testoResoImg, (coordinataX, coordinataY))
                 
         if x % 4 == 0:
+#             for parola_vocabolario in ParoleAccUtente:
+#                 if ParolaInserita == parola_vocabolario:      
+#                     # Le lettere si colorano di verde o giallo a seconda di dove e quali vengono messe
+                      # DA FINIRE CON LA FUNZIONE PER I COLORI DELLE LETTERE
+                
             if ParolaInserita == ParolaSceltaComputer:  
                 print("Hai Vinto!")
                 file = open("FileVincite.py", "a")
@@ -79,7 +84,7 @@ while running:
         else:
                 #print("Hai perso...") Edoardo: Appena si inserisce una lettera scrive continuamente "Hai perso"
                 file = open("FileVincite.py", "a")
-                file.write("Partita persa!\n")
+                #file.write("Partita persa!\n") 
                 file.close()
         
     pygame.display.flip()
