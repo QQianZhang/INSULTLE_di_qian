@@ -1,3 +1,4 @@
+
 #INSULTLE
 #Dafne Belardinelli, Edoardo Pani, Qian Qian Zhang
 
@@ -9,7 +10,6 @@ pygame.init()
 
 Larghezza_Schermo = 822
 Altezza_Schermo = 745
-
 schermo = pygame.display.set_mode((Larghezza_Schermo, Altezza_Schermo)) 
 pygame.display.set_caption("Insultle") 
 
@@ -27,10 +27,10 @@ print(ParolaSceltaComputer)
 #Sceglie un insulto a caso dalla lista
 #qian: lo ho messo fuori da running perchè se lo mettiamo dentro, ogni volta che l'utente scrivere una lettere la parola cambia
 #perchè la pagina viene "ricaricata"
-
+letteraGiusta = list(ParolaSceltaComputer)
 letteraPremuta = ""
 listaParola = []
-
+ParolaInserita= []
 running = True
 
 while running:
@@ -47,39 +47,62 @@ while running:
 
             else:
                 letteraPremuta = event.unicode
-                if letteraPremuta.upper() in "QWERTYUIOPASDFGHJKLZXCVBNM":
+                if letteraPremuta.upper() in "QWERTYUIOPASDFGHJKLZXCVBNM" and len(listaParola) < 5:
                     listaParola.append(letteraPremuta.upper())
+                    
 
     schermo.blit(imgSfondo, (0, 0))
-    
-    ParolaInserita= ""
+
+    # TITOLO
+    testoResoImg = FontLettere.render("INSULTLE", True, "black")
+    schermo.blit(testoResoImg, (50, 100))
+
+
+    # Disegno rettangoli (prima)
+    if len(listaParola) == 5:
+        for y in range(5):
+
+            colonna = y % 5
+            riga = y // 5
+
+            coordinataX = 200 + colonna * 92
+            coordinataY = 20 + riga * 77
+
+            if listaParola[y] == letteraGiusta[y]:
+                pygame.draw.rect(schermo, "green", (coordinataX, coordinataY, 70, 70))
+            else:
+                pygame.draw.rect(schermo, "red", (coordinataX, coordinataY, 70, 70))
+
+
+    #Disegno lettere (dopo, così stanno sopra)
     for x in range(len(listaParola)):
-        lettera = listaParola[x]
-        ParolaInserita += lettera
-        
-        colonna = x % 5 #in base al resto della divisione scelgo la colonna, quando è x = 0 (prima lettera) il resto sarà 0 e la colonna 0 (la prima),
-                        #quando sarà 5 (sesta lettera) il resto sarà 0 e la colonna 0 (ma della seconda riga)
+
+        colonna = x % 5
         riga = x // 5
 
         coordinataX = 200 + colonna * 92
-        coordinataY = 20 + riga * 77 
+        coordinataY = 20 + riga * 77
 
-        testoResoImg = FontLettere.render(lettera, True, "black")
+        testoResoImg = FontLettere.render(listaParola[x], True, "black")
         schermo.blit(testoResoImg, (coordinataX, coordinataY))
-                
         if x % 4 == 0:
-            if ParolaInserita == ParolaSceltaComputer:  
-                print("Hai Vinto!")
-                file = open("FileVincite.py", "a")
-                file.write("Partita vinta!\n")
-                file.close()
-                pygame.quit()
-            else:
-                print("Hai perso...")
-                file = open("FileVincite.py", "a")
-                file.write("Partita persa!\n")
-                file.close()
+                if ParolaInserita == ParolaSceltaComputer:  
+                    print("Hai Vinto!")
+                    file = open("FileVincite.py", "a")
+                    file.write("Partita vinta!\n")
+                    file.close()
+                    pygame.quit()
+                else:
+                    print("Hai perso...")
+                    file = open("FileVincite.py", "a")
+                    file.write("Partita persa!\n")
+                    file.close()
+
+
+    pygame.display.flip()
+
+
         
-        pygame.display.flip()
-        
+
+            
 pygame.quit()
