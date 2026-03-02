@@ -15,6 +15,7 @@ def main() -> None:
 
     imgSfondo = pygame.image.load("sfondoINSULTLE.jpg") 
    # imgSfondo = pygame.transform.scale(imgSfondo,(Larghezza_Schermo,Altezza_Schermo))
+    imgSfondo = pygame.transform.scale(imgSfondo,(Larghezza_Schermo,Altezza_Schermo))
 
     FontLettere = pygame.font.SysFont('Impact', 60)
 #    
@@ -70,6 +71,7 @@ def main() -> None:
         "M": pygame.Rect(530,730, 55,75),
         "CANC": pygame.Rect(590,730, 80,75)
     }
+
     running = True
 
     while running:
@@ -110,6 +112,11 @@ def main() -> None:
             # ---------------- TASTIERA ----------------
             if event.type == pygame.KEYDOWN and not giocoFinito:
 
+            if event.type == pygame.QUIT:
+                running = False
+                
+            if event.type == pygame.KEYDOWN and not giocoFinito:
+                
                 if event.key == pygame.K_ESCAPE:
                     running = False
 
@@ -118,6 +125,10 @@ def main() -> None:
 
                 elif event.key == pygame.K_RETURN:
                     if len(listaParola) == 5:
+                
+                elif event.key == pygame.K_RETURN:
+                    if len(listaParola) == 5:
+                        
                         parolaInserita = "".join(listaParola)
                         tentativi.append(parolaInserita)
                         listaParola = []
@@ -129,12 +140,30 @@ def main() -> None:
                         elif len(tentativi) == maxTentativi:
                             giocoFinito = True
                             print("STUPIDOOO!")
+                        # CONTROLLO VITTORIA
+                        if parolaInserita == ParolaSceltaComputer:
+                            #messaggioFinale = "HAI VINTO!"
+                            giocoFinito = True
+                            print("Hai Vinto!")
+                            file = open("FileVincite.txt", "a")
+                            file.write("Partita vinta!\n")
+                            file.close()
+                        
+                        # CONTROLLO SCONFITTA
+                        elif len(tentativi) == maxTentativi:
+                            #messaggioFinale = "HAI PERSO! Era: " + ParolaSceltaComputer
+                            giocoFinito = True
+                            print("STUPIDOOO!")
+                            file = open("FileVincite.txt", "a")
+                            file.write(f"Ritenta, sarai più fortunato\nla parola era {ParolaSceltaComputer}")
+                            file.close()
 
                 else:
                     letteraPremuta = event.unicode
                     if letteraPremuta.upper() in "QWERTYUIOPASDFGHJKLZXCVBNM" and len(listaParola) < 5:
                         listaParola.append(letteraPremuta.upper())
 
+                        
         #mostro lo sfondo
         schermo.blit(imgSfondo, (0, 0))
 
@@ -209,4 +238,5 @@ def main() -> None:
 #------------------------------------
     
 if __name__ == "__main__":
+    print(main())
     print(main())
