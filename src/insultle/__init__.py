@@ -14,11 +14,10 @@ def main() -> None:
     pygame.display.set_caption("Insultle") 
 
     imgSfondo = pygame.image.load("sfondoINSULTLE.jpg") 
-   # imgSfondo = pygame.transform.scale(imgSfondo,(Larghezza_Schermo,Altezza_Schermo))
     imgSfondo = pygame.transform.scale(imgSfondo,(Larghezza_Schermo,Altezza_Schermo))
 
     FontLettere = pygame.font.SysFont('Impact', 60)
-#    
+    
     vocabolario = open("Vocabolario.txt", "r")
     ParoleComputer = ["RINCO", "SCEMO", "TONTO", "PAZZO", "LENTO", "EBETE", "PIGRO", "ROZZO", "FOLLE", "MOLLE", "ASINO", "CAPRA", "CAGNA", "FESSO", "VERME", "PIRLA", "CLOWN", "MATTO"]
     ParoleAccUtente = []
@@ -36,41 +35,41 @@ def main() -> None:
     tempo_finale = 0
     #messaggioFinale = ""
 # ---------------- TASTIERA CLICCABILE ----------------
-#dizionario
+#dizionario, ad ogni lettera viene corrisposto un rettangolo di dimensioni (circa) 60x70 e la posizione dove si trova la lettera nella tastiera
     tasti_mouse = {
         # PRIMA RIGA
-        "Q": pygame.Rect(67,565, 55,70),
-        "W": pygame.Rect(127,565, 55,70),
-        "E": pygame.Rect(189,565, 53,70),
-        "R": pygame.Rect(250,565, 52,70),
-        "T": pygame.Rect(310,565, 57,70),
-        "Y": pygame.Rect(375,565, 52,70),
-        "U": pygame.Rect(435,565, 52,70),
-        "I": pygame.Rect(500,565, 50,70),
-        "O": pygame.Rect(560,565, 50,70),
-        "P": pygame.Rect(620,565, 50,70),
+        "Q": pygame.Rect(67,510, 65,70),
+        "W": pygame.Rect(138,510, 65,70),
+        "E": pygame.Rect(210,510, 60,70),
+        "R": pygame.Rect(275,510, 60,70),
+        "T": pygame.Rect(345,510, 60,70),
+        "Y": pygame.Rect(410,510, 60,70),
+        "U": pygame.Rect(480,510, 60,70),
+        "I": pygame.Rect(547,510, 60,70),
+        "O": pygame.Rect(615,510, 60,70),
+        "P": pygame.Rect(680,510, 60,70),
 
         # SECONDA RIGA
-        "A": pygame.Rect(95,650, 55,70),
-        "S": pygame.Rect(155,650, 55,70),
-        "D": pygame.Rect(220,650, 55,70),
-        "F": pygame.Rect(280,650, 55,70),
-        "G": pygame.Rect(345,650, 50,70),
-        "H": pygame.Rect(405,650, 55,70),
-        "J": pygame.Rect(465,650, 55,70),
-        "K": pygame.Rect(530,650, 55,70),
-        "L": pygame.Rect(590,650, 55,70),
+        "A": pygame.Rect(100,585, 60,70),
+        "S": pygame.Rect(170,585, 60,70),
+        "D": pygame.Rect(240,585, 60,70),
+        "F": pygame.Rect(310,585, 60,70),
+        "G": pygame.Rect(380,585, 60,70),
+        "H": pygame.Rect(450,585, 60,70),
+        "J": pygame.Rect(515,585, 60,70),
+        "K": pygame.Rect(583,585, 60,70),
+        "L": pygame.Rect(650,585, 60,70),
 
         # TERZA RIGA
-        "INVIO": pygame.Rect(67,730, 83,75),
-        "Z": pygame.Rect(155,730, 55,75),
-        "X": pygame.Rect(220,730, 55,75),
-        "C": pygame.Rect(280,730, 55,75),
-        "V": pygame.Rect(345,730, 50,75),
-        "B": pygame.Rect(405,730, 55,75),
-        "N": pygame.Rect(465,730, 55,75),
-        "M": pygame.Rect(530,730, 55,75),
-        "CANC": pygame.Rect(590,730, 80,75)
+        "INVIO": pygame.Rect(70,660, 95,70),
+        "Z": pygame.Rect(170,660, 60,70),
+        "X": pygame.Rect(240,660, 60,70),
+        "C": pygame.Rect(310,660, 60,70),
+        "V": pygame.Rect(380,660, 60,70),
+        "B": pygame.Rect(450,660, 60,70),
+        "N": pygame.Rect(515,660, 60,70),
+        "M": pygame.Rect(583,660, 60,70),
+        "CANC": pygame.Rect(650,660, 95,70),
     }
 
     running = True
@@ -88,12 +87,13 @@ def main() -> None:
                 running = False
 
             # ---------------- MOUSE ----------------
+            #se viene fatto click con il mouse ricavo la posizione di dove si trovava l'indicatore al momento del click
             if event.type == pygame.MOUSEBUTTONDOWN and not giocoFinito:
                 pos_mouse = pygame.mouse.get_pos()
-
+                #scorre tutte le lettere e i rettangoli presenti nel dizionario e se l'indicatore si trova all'interno del rettangolo entra nel ciclo if
                 for tasto, rect in tasti_mouse.items():
                     if rect.collidepoint(pos_mouse):
-
+                        
                         if tasto == "INVIO":
                             if len(listaParola) == 5:
                                 parolaInserita = "".join(listaParola)
@@ -117,7 +117,7 @@ def main() -> None:
                                 listaParola.append(tasto)
 
             # ---------------- TASTIERA ----------------
-            if event.type == pygame.KEYDOWN and not giocoFinito:
+         #   if event.type == pygame.KEYDOWN and not giocoFinito:
 
                 if event.type == pygame.QUIT:
                     running = False
@@ -187,14 +187,12 @@ def main() -> None:
                 if parola[num] == listaSceltaComputer[num]:
                     colore = (0, 200, 0)# verde
                     listaSceltaComputer[num] = ""
-            #for mun in range(5):
-                elif parola[num] in listaSceltaComputer:
-                    colore = (220, 200, 0)  # giallo
+
                     
-#                     elif parola[num] in listaSceltaComputer:
-#     colore = (220, 200, 0)
-#     listaSceltaComputer[listaSceltaComputer.index(parola[num])] = ""
-#                     
+                elif parola[num] in listaSceltaComputer:
+                    colore = (220, 200, 0)
+                    listaSceltaComputer[listaSceltaComputer.index(parola[num])] = ""
+                    
                 else:
                     colore = (200, 0, 0)  # rosso
 
