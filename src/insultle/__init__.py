@@ -33,6 +33,7 @@ def main() -> None:
     tentativi = []
     maxTentativi = 6
     giocoFinito = False
+    tempo_finale = 0
     #messaggioFinale = ""
 # ---------------- TASTIERA CLICCABILE ----------------
 #dizionario
