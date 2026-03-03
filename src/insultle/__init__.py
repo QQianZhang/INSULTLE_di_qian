@@ -32,6 +32,7 @@ def main() -> None:
     tentativi = []
     maxTentativi = 6
     giocoFinito = False
+    tempo_finale = 0
     #messaggioFinale = ""
 # ---------------- TASTIERA CLICCABILE ----------------
 #dizionario, ad ogni lettera viene corrisposto un rettangolo di dimensioni (circa) 60x70 e la posizione dove si trova la lettera nella tastiera
@@ -72,6 +73,12 @@ def main() -> None:
     }
 
     running = True
+# ---------------- TIMER ----------------
+    FontTimer = pygame.font.SysFont('Impact', 40)  
+    tempo_inizio = pygame.time.get_ticks()  
+    # Il timer inizia il momento esatto (in millisecondi) in cui parte la partita
+    tempo_salvato = False  
+    # Serve per evitare di scrivere più volte il tempo nel file
 
     while running:
         for event in pygame.event.get():
@@ -112,8 +119,8 @@ def main() -> None:
             # ---------------- TASTIERA ----------------
          #   if event.type == pygame.KEYDOWN and not giocoFinito:
 
-            if event.type == pygame.QUIT:
-                running = False
+                if event.type == pygame.QUIT:
+                    running = False
                 
             if event.type == pygame.KEYDOWN and not giocoFinito:
                 
@@ -123,6 +130,7 @@ def main() -> None:
                 elif event.key == pygame.K_BACKSPACE and len(listaParola) > 0:
                     listaParola.pop()
 
+                
                 elif event.key == pygame.K_RETURN:
                     if len(listaParola) == 5:
                         
@@ -209,22 +217,43 @@ def main() -> None:
             testo = FontLettere.render(listaParola[num], True, "black")
             schermo.blit(testo, (coordinataX + 15, coordinataY))
 
+        # ---------------- DISEGNO TIMER ----------------
 
+        if not giocoFinito:
+
+            tempo_attuale = (pygame.time.get_ticks() - tempo_inizio) // 1000
+            # Calcolo il tempo trascorso:
+            # // 1000 serve per trasformare i millisecondi in secondi
+
+        else:
+            tempo_attuale = tempo_finale
+            # Mostro il tempo finale
+
+        testo_timer = FontTimer.render(f"{tempo_attuale}s", True, (0, 0, 0))
+        # Creo il testo con il tempo
+
+        schermo.blit(testo_timer, (50, 20))
+        # Disegno il timer in alto a sinistra dello schermo
+        
         # MESSAGGIO FINALE
 #         conta = 0
 #         if giocoFinito and conta == 0:
-# #             testo_finale = FontMessaggio.render(messaggioFinale, True, "black")
-# #             schermo.blit(testo_finale, (200, 600))
+# #            testo_finale = FontMessaggio.render(messaggioFinale, True, "black")
+# #            schermo.blit(testo_finale, (200, 600))
 #             print("Hai Vinto!")
-#             file = open("FileVincite.txt", "a")
-#             file.write("Partita vinta!\n")
-#             conta += 1
-#             file.close()
+#             tempo_finale = (pygame.time.get_ticks() - tempo_inizio) // 1000
+#             if not tempo_salvato:
+#                 file = open("FileVincite.txt", "a")
+#                 file.write("Partita vinta in", tempo_finale, "secondi\n")
+#                 conta += 1
+#                 file.close()
 #         else:
 #             file = open("FileVincite.txt", "a")
 #             file.write("Ritenta, sarai più fortunato\n")
 #             conta += 1
 #             file.close()
+#             tempo_salvato = True
+        
 
         pygame.display.flip()
 
