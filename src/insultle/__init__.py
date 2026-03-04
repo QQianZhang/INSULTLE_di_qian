@@ -4,7 +4,13 @@
 import pygame
 import random
 #from pathlib import Path
-
+# def reset() -> None:
+#     listaParola = []
+#     tentativi = []
+#     maxTentativi = 6
+#     giocoFinito = False
+#     tempo_finale = 0 devo fare una funzione che resetti gioco, che quindi tutte le variabili tornino 0 (pure il timer)
+    
 def main() -> None:
     pygame.init()
 
@@ -26,6 +32,7 @@ def main() -> None:
     
     ParolaSceltaComputer = random.choice(ParoleComputer)
     print("PAROLA SEGRETA:", ParolaSceltaComputer)
+    
     pygame.mixer.init() 
     pygame.mixer.music.load("suonoSottofondo.mp3")
     pygame.mixer.music.set_volume(0.4) #suonoSottofondo.pygame.mixer.music.set_volume(0.4) sbagliato perche mixer non si assegna alle variabili
@@ -156,7 +163,8 @@ def main() -> None:
                             file.write("Partita vinta!\n")
                             file.close()
                             pygame.mixer.music.stop()
-                            suonoVittoria.play()
+                            suonoVittoria.play() 
+                                
                         
                         # CONTROLLO SCONFITTA
                         elif len(tentativi) == maxTentativi:
@@ -173,8 +181,13 @@ def main() -> None:
                     letteraPremuta = event.unicode
                     if letteraPremuta.upper() in "QWERTYUIOPASDFGHJKLZXCVBNM" and len(listaParola) < 5:
                         listaParola.append(letteraPremuta.upper())
-
                         
+#             if event.type == pygame.KEYDOWN and giocoFinito:
+#                 if event.key == pygame.K_r:
+                    #reset
+                
+
+            
         #mostro lo sfondo
         schermo.blit(imgSfondo, (0, 0))
 
@@ -228,15 +241,11 @@ def main() -> None:
 
             tempo_attuale = (pygame.time.get_ticks() - tempo_inizio) // 1000
             # Calcolo il tempo trascorso:
-            # // 1000 serve per trasformare i millisecondi in secondi
-
-        else:
-            tempo_attuale = tempo_finale
-            # Mostro il tempo finale
+            # // 1000 serve per trasformare i millisecondi in secondi0.
 
         testo_timer = FontTimer.render(f"{tempo_attuale}s", True, (0, 0, 0))
         # Creo il testo con il tempo
-
+        
         schermo.blit(testo_timer, (50, 20))
         # Disegno il timer in alto a sinistra dello schermo
         
