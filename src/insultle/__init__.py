@@ -3,10 +3,12 @@
 
 import pygame
 import random
+import time
 from platformdirs import PlatformDirs
 
 dirs = PlatformDirs("insultle", ensure_exists=True)
-print(dirs)
+
+file_classifica = dirs.user_data_dir + "/classifica.txt"
 
 pygame.init()
 pygame.mixer.init() 
@@ -18,16 +20,68 @@ suonoVittoria.set_volume(0.7)
 
 giocoFinito = False
 parolaSceltaComputer = ""
+
+
+def nome():
+
+    Larghezza_Schermo = 822
+    Altezza_Schermo = 745
+    schermo = pygame.display.set_mode((Larghezza_Schermo, Altezza_Schermo)) 
+
+    FontLettere = pygame.font.SysFont('Impact', 60)
+
+    imgSfondo = pygame.image.load("sfondoINSULTLE.jpg") 
+    imgSfondo = pygame.transform.scale(imgSfondo,(Larghezza_Schermo,Altezza_Schermo))
+
+    nome_giocatore = ""
+
+    running = True
+    while running:
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                running = False
+
+            if event.type == pygame.KEYDOWN:
+
+                if event.key == pygame.K_RETURN:
+                    return nome_giocatore   # restituisce il nome
+
+                elif event.key == pygame.K_BACKSPACE:
+                    nome_giocatore = nome_giocatore[:-1]
+
+                else:
+                    nome_giocatore += event.unicode
+
+        # sfondo
+        schermo.blit(imgSfondo,(0,0))
+
+        # scritta
+        testo = FontLettere.render("INSERISCI IL TUO NOME", True, "black")
+        schermo.blit(testo,(150,200))
+
+        # rettangolo bianco
+        rect_nome = pygame.Rect(200,300,400,80)
+        pygame.draw.rect(schermo,"white",rect_nome)
+
+        # nome scritto
+        testo_nome = FontLettere.render(nome_giocatore,True,"black")
+        schermo.blit(testo_nome,(rect_nome.x+10,rect_nome.y+10))
+
+        pygame.display.flip()
+
     
-def vittoria():
+
+def vittoria(nome_giocatore,tempo):
     global giocoFinito
-    giocoFinito = True
-    print("Hai Vinto!")
-    file = open("FileVincite.txt", "a")
-    file.write("Partita vinta!\n")
-    file.close()
     pygame.mixer.music.stop()
     suonoVittoria.play()
+    giocoFinito = True
+    with open(file_classifica, "a") as file:
+        file.write(f"{nome_giocatore},{tempo}\n")
+
+
     
 def sconfitta():
     global giocoFinito
@@ -48,12 +102,12 @@ def schermataIniziale():
 
     FontLettere = pygame.font.SysFont('Impact', 60)
 
-    imgSfondo = pygame.image.load("sfondo-verde-chiaro.webp") 
+    imgSfondo = pygame.image.load("sfondoBIANCO.jfif") 
     imgSfondo = pygame.transform.scale(imgSfondo,(Larghezza_Schermo,Altezza_Schermo))
 
     tasti_mouse = {
-        "GIOCA": pygame.Rect(67,510, 200,70),
-        "CLASSIFICA": pygame.Rect(300,510, 300,70),
+        "GIOCA": pygame.Rect(80,510, 200,70),
+        "CLASSIFICA": pygame.Rect(400,510, 300,70),
     }
 
     running = True
@@ -63,7 +117,7 @@ def schermataIniziale():
 
         # Disegno pulsanti
         for tasto, rect in tasti_mouse.items():
-            pygame.draw.rect(schermo, "white", rect)
+            pygame.draw.rect(schermo, "green", rect)
             testo = FontLettere.render(tasto, True, "black")
             schermo.blit(testo, (rect.x + 10, rect.y + 5))
 
@@ -83,7 +137,8 @@ def schermataIniziale():
                     if rect.collidepoint(pos_mouse):
                         if tasto == "GIOCA":
                             running = False #così la schermata iniziale non c'è più, sennò la schermata di gioco si sovrapponeva a quella iniziale
-                            gioco()
+                            nome_giocatore = nome()
+                            gioco(nome_giocatore)
                         elif tasto == "CLASSIFICA":
                             print("CLASSIFICA")
 
@@ -92,7 +147,7 @@ def schermataIniziale():
     #pygame.quit() #se lasciamo pygame.quit in def schermatainziale e def gioco, il gioco crasha, la soluzione più veloce è toglierlo in entrambi e metterlo solo alla fine
     
     
-def gioco():
+def gioco(nome_giocatore):
     
     global giocoFinito
     global parolaSceltaComputer
@@ -112,9 +167,10 @@ def gioco():
     ParoleComputer = ["RINCO", "SCEMO", "TONTO", "PAZZO", "LENTO", "EBETE", "PIGRO", "ROZZO", "FOLLE", "MOLLE", "ASINO", "CAPRA", "CAGNA", "FESSO", "VERME", "PIRLA", "CLOWN", "MATTO"]
     ParoleAccUtente = []
     
-    vocabolario = open("Vocabolario.txt", "r")
-    paroleAccetabili = vocabolario.read()
-    vocabolario.close()
+    #apre il file vocabolario  e togli lo spazio finale da ogni parola
+    with open("Vocabolario.txt", "r") as voc:
+        paroleAccetabili = [p.strip() for p in voc.readlines()]
+
     
     parolaSceltaComputer = random.choice(ParoleComputer)
     print("PAROLA SEGRETA:", parolaSceltaComputer)
@@ -126,6 +182,7 @@ def gioco():
     #variabili---------------------------------
     listaParola = []
     tentativi = []
+    
     maxTentativi = 6
 
 # ---------------- TASTIERA CLICCABILE ----------------
@@ -168,14 +225,19 @@ def gioco():
 
 # ---------------- TIMER ----------------
     FontTimer = pygame.font.SysFont('Impact', 40)  
-    tempo_inizio = pygame.time.get_ticks()  
+    tempo_inizio = pygame.time.get_ticks()
+    tempoAttuale = 0
     # Il timer inizia il momento esatto (in millisecondi) in cui parte la partita
     #tempo_salvato = False  
     # Serve per evitare di scrivere più volte il tempo nel file
     running = True
     while running:
         for event in pygame.event.get():
-
+#             if giocoFinito:
+#                 pygame.display.flip()
+#                 pygame.time.delay(3000)
+#                 running = False
+#                 schermataIniziale()
             if event.type == pygame.QUIT:
                 running = False
 
@@ -194,7 +256,7 @@ def gioco():
                                 listaParola = []
 
                                 if parolaInserita == parolaSceltaComputer:
-                                    vittoria()
+                                    vittoria(nome_giocatore,tempo)
 
                                 elif len(tentativi) == maxTentativi:
                                     sconfitta()
@@ -230,7 +292,7 @@ def gioco():
 
                         # CONTROLLO VITTORIA
                         if parolaInserita == parolaSceltaComputer: 
-                            vittoria() 
+                            vittoria(nome_giocatore,tempoAttuale) 
                                 
                         # CONTROLLO SCONFITTA
                         elif len(tentativi) == maxTentativi:
@@ -238,7 +300,7 @@ def gioco():
 
                 else:
                     letteraPremuta = event.unicode
-                    if letteraPremuta.lower() in "QWERTYUIOPASDFGHJKLZXCVBNM" and len(listaParola) < 5:
+                    if letteraPremuta.upper() in "QWERTYUIOPASDFGHJKLZXCVBNM" and len(listaParola) < 5:
                         listaParola.append(letteraPremuta.upper())
                         
             if event.type == pygame.KEYDOWN and giocoFinito:
@@ -251,34 +313,51 @@ def gioco():
         #mostro lo sfondo
         schermo.blit(imgSfondo, (0, 0))
 
-        # DISEGNO TENTATIVI COLORATI
+        # Disegno i tentativi colorati (verde, giallo, rosso)
         for riga in range(len(tentativi)):
-
             parola = tentativi[riga]
-            listaSceltaComputer = list(parolaSceltaComputer)
+            segreta = list(parolaSceltaComputer)
+            colori = [""] * 5
+
+            # Verde
+            for i in range(5):
+                if parola[i] == segreta[i]:
+                    colori[i] = (0, 200, 0)
+                    segreta[i] = None
+
+            # Giallo / Rosso
+            for i in range(5):
+                if colori[i] == "":
+                    if parola[i] in segreta:
+                        colori[i] = (220, 200, 0)
+                        segreta[segreta.index(parola[i])] = None
+                    else:
+                        colori[i] = (200, 0, 0)
+
+            # Disegna caselle
             for num in range(5):
-
-                colonna = num
-
-                coordinataX = 200 + colonna * 92
+                coordinataX = 200 + num * 92
                 coordinataY = 20 + riga * 77
-
-                if parola[num] == listaSceltaComputer[num]:
-                    colore = (0, 200, 0)# verde
-                    listaSceltaComputer[num] = ""
-
-                    
-                elif parola[num] != listaSceltaComputer[num] and parola[num] not in listaSceltaComputer:
-                    colore = (200, 0, 0)  # rosso
-                    #listaSceltaComputer[listaSceltaComputer.index(parola[num])] = ""
-                    
-                elif parola[num] != listaSceltaComputer[num] and parola[num] in listaSceltaComputer:
-                    colore = (220, 200, 0) #giallo
-
-                pygame.draw.rect(schermo, colore, (coordinataX, coordinataY, 70, 70))
-
+                pygame.draw.rect(schermo, colori[num], (coordinataX, coordinataY, 70, 70))
                 testo = FontLettere.render(parola[num], True, "black")
                 schermo.blit(testo, (coordinataX + 15, coordinataY))
+
+        # Disegno la parola in corso (listaParola)
+        rigaAttuale = len(tentativi)
+        for num in range(len(listaParola)):
+            coordinataX = 200 + num * 92
+            coordinataY = 20 + rigaAttuale * 77
+            pygame.draw.rect(schermo, "white", (coordinataX, coordinataY, 70, 70))
+            testo = FontLettere.render(listaParola[num], True, "black")
+            schermo.blit(testo, (coordinataX + 15, coordinataY))
+
+        # Disegno il timer
+        testoTimer = FontTimer.render(f"{tempoAttuale}s", True, (0, 0, 0))
+        schermo.blit(testoTimer, (50, 20))
+
+        # Aggiorno lo schermo
+        pygame.display.flip()
+
         
 
         # DISEGNO PAROLA IN CORSO (non ancora inviata)
