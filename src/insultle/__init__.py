@@ -5,10 +5,7 @@ import pygame
 import random
 import time
 from platformdirs import PlatformDirs
-
-dirs = PlatformDirs("insultle", ensure_exists=True)
-
-file_classifica = dirs.user_data_dir + "/classifica.txt"
+from pathlib import Path
 
 pygame.init()
 pygame.mixer.init() 
@@ -18,16 +15,17 @@ suonoVittoria = pygame.mixer.Sound("suonoVittoria.mp3")
 suonoSconfitta.set_volume(0.7)
 suonoVittoria.set_volume(0.7)
 
+
 giocoFinito = False
 parolaSceltaComputer = ""
 
 
 def nome():
-
+    dirs = PlatformDirs("insultle", ensure_exists=True)
     Larghezza_Schermo = 822
     Altezza_Schermo = 745
     schermo = pygame.display.set_mode((Larghezza_Schermo, Altezza_Schermo)) 
-
+    pygame.display.set_caption("Insultle")
     FontLettere = pygame.font.SysFont('Impact', 60)
 
     imgSfondo = pygame.image.load("sfondoINSULTLE.jpg") 
@@ -78,7 +76,8 @@ def vittoria(nome_giocatore,tempo):
     pygame.mixer.music.stop()
     suonoVittoria.play()
     giocoFinito = True
-    with open(file_classifica, "a") as file:
+    file_classifica = dirs.user_data_dir + "/FileClassifica.txt"
+    with open("FileClassifica", "a") as file:
         file.write(f"{nome_giocatore},{tempo}\n")
 
 
@@ -164,12 +163,12 @@ def gioco(nome_giocatore):
 
     FontLettere = pygame.font.SysFont('Impact', 60)
     
-    ParoleComputer = ["RINCO", "SCEMO", "TONTO", "PAZZO", "LENTO", "EBETE", "PIGRO", "ROZZO", "FOLLE", "MOLLE", "ASINO", "CAPRA", "CAGNA", "FESSO", "VERME", "PIRLA", "CLOWN", "MATTO"]
+    ParoleComputer = ["RINCO", "SCEMO", "SCEMA", "TONTO", "TONTA", "PAZZO", "PAZZA", "LENTO", "LENTA", "EBETE", "PIGRO", "PIGRA", "ROZZO", "ROZZA", "FOLLE", "MOLLE", "ASINO", "CAPRA", "CAGNA", "FESSO", "VERME", "PIRLA", "CLOWN", "MATTO", "MATTA", "TARDO", "TARDA"]
     ParoleAccUtente = []
     
     #apre il file vocabolario  e togli lo spazio finale da ogni parola
     with open("Vocabolario.txt", "r") as voc:
-        paroleAccetabili = [p.strip() for p in voc.readlines()]
+        paroleAccettabili = [p.strip().upper() for p in voc.readlines()]
 
     
     parolaSceltaComputer = random.choice(ParoleComputer)
@@ -179,7 +178,7 @@ def gioco(nome_giocatore):
     pygame.mixer.music.set_volume(0.4) #suonoSottofondo.pygame.mixer.music.set_volume(0.4) sbagliato perche mixer non si assegna alle variabili
     pygame.mixer.music.play(-1)
 
-    #variabili---------------------------------
+    # ---------------- VARIABILI ----------------
     listaParola = []
     tentativi = []
     
@@ -251,12 +250,12 @@ def gioco(nome_giocatore):
                         
                         if tasto == "INVIO":
                             parolaInserita = "".join(listaParola)
-                            if len(listaParola) == 5 and parolaInserita in paroleAccetabili:
+                            if len(listaParola) == 5 and parolaInserita in paroleAccettabili:
                                 tentativi.append(parolaInserita)
                                 listaParola = []
 
                                 if parolaInserita == parolaSceltaComputer:
-                                    vittoria(nome_giocatore,tempo)
+                                    vittoria(nome_giocatore, tempoAttuale)
 
                                 elif len(tentativi) == maxTentativi:
                                     sconfitta()
@@ -285,16 +284,16 @@ def gioco(nome_giocatore):
                 
                 elif event.key == pygame.K_RETURN:
                     parolaInserita = "".join(listaParola)
-                    if len(listaParola) == 5 and parolaInserita in paroleAccetabili:
+                    if len(listaParola) == 5 and parolaInserita in paroleAccettabili:
                         
                         tentativi.append(parolaInserita)
                         listaParola = []
 
-                        # CONTROLLO VITTORIA
+                        # ---------------- CONTROLLO VITTORIA ----------------
                         if parolaInserita == parolaSceltaComputer: 
                             vittoria(nome_giocatore,tempoAttuale) 
                                 
-                        # CONTROLLO SCONFITTA
+                        # ---------------- CONTROLLO SCONFITTA ----------------
                         elif len(tentativi) == maxTentativi:
                             sconfitta()
 
@@ -360,7 +359,7 @@ def gioco(nome_giocatore):
 
         
 
-        # DISEGNO PAROLA IN CORSO (non ancora inviata)
+        # ---------------- DISEGNO PAROLA IN CORSO ----------------
         rigaAttuale = len(tentativi)
 
         for num in range(len(listaParola)):
