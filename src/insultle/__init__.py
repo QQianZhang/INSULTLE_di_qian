@@ -10,18 +10,18 @@ from pathlib import Path
 pygame.init()
 pygame.mixer.init() 
 
+dirs = PlatformDirs("insultle", ensure_exists=True)
+
 suonoSconfitta = pygame.mixer.Sound("suonoSconfitta.mp3")
 suonoVittoria = pygame.mixer.Sound("suonoVittoria.mp3")
 suonoSconfitta.set_volume(0.7)
 suonoVittoria.set_volume(0.7)
 
-
 giocoFinito = False
 parolaSceltaComputer = ""
-
-
+testo = "INSULTLE\nVi siete divertiti a giocare ad Insultle??? Se sì lasciate una bella recensione (10/10)\n"
+#--------nome giocatore----------------------------------------------------------
 def nome():
-    dirs = PlatformDirs("insultle", ensure_exists=True)
     Larghezza_Schermo = 822
     Altezza_Schermo = 745
     schermo = pygame.display.set_mode((Larghezza_Schermo, Altezza_Schermo)) 
@@ -34,6 +34,7 @@ def nome():
     nome_giocatore = ""
 
     running = True
+    
     while running:
 
         for event in pygame.event.get():
@@ -61,37 +62,35 @@ def nome():
 
         # rettangolo bianco
         rect_nome = pygame.Rect(200,300,400,80)
-        pygame.draw.rect(schermo,"white",rect_nome)
+        pygame.draw.rect(schermo,"black",rect_nome)
 
         # nome scritto
-        testo_nome = FontLettere.render(nome_giocatore,True,"black")
+        testo_nome = FontLettere.render(nome_giocatore,True,"white")
         schermo.blit(testo_nome,(rect_nome.x+10,rect_nome.y+10))
 
         pygame.display.flip()
-
     
-
+#--------vittoria----------------------------------------------------------
 def vittoria(nome_giocatore,tempo):
     global giocoFinito
     pygame.mixer.music.stop()
     suonoVittoria.play()
     giocoFinito = True
-    file_classifica = dirs.user_data_dir + "/FileClassifica.txt"
-    with open("FileClassifica", "a") as file:
-        file.write(f"{nome_giocatore},{tempo}\n")
+    with open("fileVincente.txt", "w") as file:
+       file.write(f"{testo}BRAVO {nome_giocatore} HAI VINTO!! ci hai messo: {tempo}sec")
 
-
-    
+#--------sconfitta----------------------------------------------------------   
 def sconfitta():
     global giocoFinito
+    global parolaSceltaComputer
     giocoFinito = True
     print("STUPIDOOO")
-    file = open("FileVincite.txt", "a")
-    file.write(f"Ritenta, sarai più fortunato\nla parola era {parolaSceltaComputer}")
-    file.close()
-    pygame.mixer.music.stop()
-    suonoSconfitta.play()
+    
+    with open("fileVincente.txt", "w") as file:
+       file.write(f"{testo}BRAVO PECCATO, ritenta che sarai più fortunato!!! la parola era: {parolaSceltaComputer}")
 
+
+#--------schermata iniziale----------------------------------------------------------
 def schermataIniziale():
 
     Larghezza_Schermo = 822
@@ -142,10 +141,8 @@ def schermataIniziale():
                             print("CLASSIFICA")
 
         pygame.display.flip()
-
-    #pygame.quit() #se lasciamo pygame.quit in def schermatainziale e def gioco, il gioco crasha, la soluzione più veloce è toglierlo in entrambi e metterlo solo alla fine
     
-    
+#--------gioco----------------------------------------------------------  
 def gioco(nome_giocatore):
     
     global giocoFinito
@@ -164,11 +161,10 @@ def gioco(nome_giocatore):
     FontLettere = pygame.font.SysFont('Impact', 60)
     
     ParoleComputer = ["RINCO", "SCEMO", "SCEMA", "TONTO", "TONTA", "PAZZO", "PAZZA", "LENTO", "LENTA", "EBETE", "PIGRO", "PIGRA", "ROZZO", "ROZZA", "FOLLE", "MOLLE", "ASINO", "CAPRA", "CAGNA", "FESSO", "VERME", "PIRLA", "CLOWN", "MATTO", "MATTA", "TARDO", "TARDA"]
-    ParoleAccUtente = []
     
     #apre il file vocabolario  e togli lo spazio finale da ogni parola
-    with open("Vocabolario.txt", "r") as voc:
-        paroleAccettabili = [p.strip().upper() for p in voc.readlines()]
+    with open("Vocabolario.txt", "r") as vocabolario:
+        paroleAccettabili = [p.strip().upper() for p in vocabolario.readlines()]
 
     
     parolaSceltaComputer = random.choice(ParoleComputer)
@@ -232,11 +228,7 @@ def gioco(nome_giocatore):
     running = True
     while running:
         for event in pygame.event.get():
-#             if giocoFinito:
-#                 pygame.display.flip()
-#                 pygame.time.delay(3000)
-#                 running = False
-#                 schermataIniziale()
+            
             if event.type == pygame.QUIT:
                 running = False
 
@@ -270,9 +262,6 @@ def gioco(nome_giocatore):
 
             # ---------------- TASTIERA ----------------
             if event.type == pygame.KEYDOWN:
-
-                if event.type == pygame.QUIT:
-                    running = False
                     
                 if event.key == pygame.K_ESCAPE:
                     running = False
@@ -305,7 +294,7 @@ def gioco(nome_giocatore):
             if event.type == pygame.KEYDOWN and giocoFinito:
                 if event.key == pygame.K_r:
                     running = False 
-                    schermataIniziale()
+                    gioco(nome_giocatore)
                 
 
             
