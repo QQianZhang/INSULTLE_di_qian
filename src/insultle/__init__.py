@@ -14,10 +14,11 @@ pygame.mixer.init() #fondamentale per i suoni
 
 #configurazione delle directory (cartella del computer) dove vengono salvati i file per il gioco, si chiamerà "insultle"
 dirs = PlatformDirs("insultle", ensure_exists=True)
+percorsoFileVincente = dirs.user_data_dir + "/fileVincente.txt"
 
 #caricamento e configurazione degli effetti sonori
-suonoSconfitta = pygame.mixer.Sound("suonoSconfitta.mp3")
-suonoVittoria = pygame.mixer.Sound("suonoVittoria.mp3")
+suonoSconfitta = pygame.mixer.Sound("src/insultle/suonoSconfitta.mp3")
+suonoVittoria = pygame.mixer.Sound("src/insultle/suonoVittoria.mp3")
 suonoSconfitta.set_volume(0.7)
 suonoVittoria.set_volume(0.7)
 
@@ -42,7 +43,7 @@ def nome():
     FontLettere = pygame.font.SysFont('Impact', 60)
     
     #carica l'immagine di sfondo in base alle variabili sopra scritte
-    imgSfondo = pygame.image.load("sfondoINSULTLE.jpg") 
+    imgSfondo = pygame.image.load("src/insultle/sfondoINSULTLE.jpg") 
     imgSfondo = pygame.transform.scale(imgSfondo,(Larghezza_Schermo,Altezza_Schermo))
 
     nome_giocatore = "" #stringa vuota in cui andrà agigunto il nome
@@ -101,7 +102,7 @@ def vittoria(nome_giocatore,tempo):
     pygame.mixer.music.stop() #fermo la musica di sottofondo
     suonoVittoria.play() #metto il fuono di vittoria
     giocoFinito = True #modifico la variabile globale
-    with open("fileVincente.txt", "w") as file: #apro il file
+    with open(percorsoFileVincente, "w") as file: #apro il file
         #             testo predefinito
         file.write(f"{testo}BRAVO {nome_giocatore} HAI VINTO!! ci hai messo: {tempo}sec \n")
         #lo apro in w perchè non voglio un elenco continuo di "vinto" e "perso"
@@ -119,7 +120,7 @@ def sconfitta():
     pygame.mixer.music.stop() #fermo la musica di sottofondo
     suonoSconfitta.play() #metto il fuono di sconfitta
     giocoFinito = True  #modifico la variabile globale   
-    with open("fileVincente.txt", "w") as file: #apro il file
+    with open(percorsoFileVincente, "w") as file: #apro il file
         #             testo predefinito
         file.write(f"{testo} PECCATO, ritenta che sarai più fortunato!!! \nla parola era: {parolaSceltaComputer} \n")
         #lo apro in w perchè non voglio un elenco continuo di "vinto" e "perso"
@@ -132,7 +133,7 @@ def main():
     - GIOCA: avvia una partita normale con parola casuale
     - PAROLA DEL GIORNO: avvia una partita con la parola del giorno
     """
-    
+
     #imposto le variabili per lo sfondo
     Larghezza_Schermo = 822
     Altezza_Schermo = 745
@@ -143,9 +144,9 @@ def main():
     #parole da indovinare
     ParoleComputer = ["RINCO", "SCEMO", "SCEMA", "TONTO", "TONTA", "PAZZO", "PAZZA", "LENTO", "LENTA", "EBETE", "PIGRO", "PIGRA", "ROZZO", "ROZZA", "FOLLE", "MOLLE", "ASINO", "CAPRA", "CAGNA", "FESSO", "VERME", "PIRLA", "CLOWN", "MATTO", "MATTA", "TARDO", "TARDA"]
     #carico le immagini 
-    imgSfondo = pygame.image.load("sfondoBIANCO.jfif") 
+    imgSfondo = pygame.image.load("src/insultle/sfondoBIANCO.jfif") 
     imgSfondo = pygame.transform.scale(imgSfondo,(Larghezza_Schermo,Altezza_Schermo))
-    imgRegole = pygame.image.load("RegoleInsultle.png") 
+    imgRegole = pygame.image.load("src/insultle/RegoleInsultle.png") 
     imgRegole = pygame.transform.scale(imgRegole,(400,400))
     
     #creo due tasti che mi portano al gioco vero e proprio
@@ -245,13 +246,13 @@ def gioco(nome_giocatore, parolaSceltaComputer):
     pygame.display.set_caption("Insultle") 
 
     #carico sfondo
-    imgSfondo = pygame.image.load("sfondoINSULTLE.jpg") 
+    imgSfondo = pygame.image.load("src/insultle/sfondoINSULTLE.jpg") 
     imgSfondo = pygame.transform.scale(imgSfondo,(Larghezza_Schermo,Altezza_Schermo))
     #carico immagine della casa che porterà il giocatore al menù iniziale
-    imgCasa = pygame.image.load("casa.png") 
+    imgCasa = pygame.image.load("src/insultle/casa.png") 
     imgCasa = pygame.transform.scale(imgCasa,(50,50))
     #carico immagine tasto retry che fa ripartire il gioco da capo
-    imgRetry = pygame.image.load("retry.jpg") 
+    imgRetry = pygame.image.load("src/insultle/retry.jpg") 
     imgRetry = pygame.transform.scale(imgRetry,(50,50))
 
     FontLettere = pygame.font.SysFont('Impact', 60)
@@ -260,7 +261,7 @@ def gioco(nome_giocatore, parolaSceltaComputer):
     #ParoleComputer = ["RINCO", "SCEMO", "SCEMA", "TONTO", "TONTA", "PAZZO", "PAZZA", "LENTO", "LENTA", "EBETE", "PIGRO", "PIGRA", "ROZZO", "ROZZA", "FOLLE", "MOLLE", "ASINO", "CAPRA", "CAGNA", "FESSO", "VERME", "PIRLA", "CLOWN", "MATTO", "MATTA", "TARDO", "TARDA"]
     
     #apre il file vocabolario (le parole accettabili) e togli lo spazio finale da ogni parola
-    with open("Vocabolario.txt", "r") as vocabolario: #apre il file vocabolario in lettura
+    with open("src/insultle/Vocabolario.txt", "r") as vocabolario: #apre il file vocabolario in lettura
         paroleAccettabili = [p.strip().upper() for p in vocabolario.readlines()] #legge tutte le tighe e restituisce una lista con
                                                                                  #le parole accettabili senza \n (strip)
 
@@ -269,7 +270,7 @@ def gioco(nome_giocatore, parolaSceltaComputer):
     #print("PAROLA SEGRETA:", parolaSceltaComputer)
     
     #avvia la musica di sottofondo
-    pygame.mixer.music.load("suonoSottofondo.mp3")
+    pygame.mixer.music.load("src/insultle/suonoSottofondo.mp3")
     pygame.mixer.music.set_volume(0.4) #suonoSottofondo.pygame.mixer.music.set_volume(0.4) sbagliato perche mixer non si assegna alle variabili
     pygame.mixer.music.play(-1) #rendo quella musica un loop
 
@@ -334,7 +335,7 @@ def gioco(nome_giocatore, parolaSceltaComputer):
 
             # ---------------- MOUSE ----------------
             #se viene fatto click con il mouse ricavo la posizione di dove si trovava l'indicatore al momento del click
-            if event.type == pygame.MOUSEBUTTONDOWN and not giocoFinito:
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 pos_mouse = pygame.mouse.get_pos()
                 #scorre tutte le lettere e i rettangoli presenti nel dizionario e se l'indicatore si trova all'interno del rettangolo entra nel ciclo if
                 for tasto, rect in tasti_mouse.items():
@@ -342,6 +343,8 @@ def gioco(nome_giocatore, parolaSceltaComputer):
                         
                         #se il mouse si trova sopra il tasto invio
                         if tasto == "INVIO":
+                            if giocoFinito:
+                                continue
                             #la parola sarà composta dagli elementi della lista (le lettere scritte dall'utente)
                             parolaInserita = "".join(listaParola)
                             #se quella lista (quindi la parola) è lunga 5 ed è accettabile
@@ -363,16 +366,20 @@ def gioco(nome_giocatore, parolaSceltaComputer):
                                     
                         #se il tasto è canc
                         elif tasto == "CANC":
+                            if giocoFinito:
+                                continue
                             #se la lista non è vuota
                             if len(listaParola) > 0:
                                 listaParola.pop() #eliminiamo l'ultima lettera inserita
                         
                         elif tasto == "casa":
                             running = False
+                            print("CASA")
                             main()
                         elif tasto == "retry":
                             running = False
-                            gioco(nome_giocatore)
+                            print("RIPROVA")
+                            gioco(nome_giocatore, parolaSceltaComputer)
                         #se è un qualunque altro tasto
                         else:
                             #è la lista non è piena (dato che le parole sono max da 5)
@@ -422,7 +429,7 @@ def gioco(nome_giocatore, parolaSceltaComputer):
                     #gioco si interrompe
                     running = False
                     #richiamo la funzione gioco perchè deve ricominciare
-                    gioco(nome_giocatore)
+                    gioco(nome_giocatore,parolaSceltaComputer)
             
         #mostro lo sfondo
         schermo.blit(imgSfondo, (0, 0))
