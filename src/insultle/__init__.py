@@ -196,6 +196,7 @@ def main():
                 for tasto, rect in tasti_mouse.items(): #cicla tutto i due tasti virtuali sopra creati
                     if rect.collidepoint(pos_mouse): #quando trova quello che corrisponde alla posizione cliccata
                         if tasto == "GIOCA":
+                            parolaSpeciale = False
                             running = False #così la schermata iniziale non c'è più, sennò la schermata di gioco si sovrapponeva a quella iniziale
                             nome_giocatore = nome() #salviamo il nome del giocatore
                             #ParoleComputer = ["RINCO", "SCEMO", "SCEMA", "TONTO", "TONTA", "PAZZO", "PAZZA", "LENTO", "LENTA", "EBETE", "PIGRO", "PIGRA", "ROZZO", "ROZZA", "FOLLE", "MOLLE", "ASINO", "CAPRA", "CAGNA", "FESSO", "VERME", "PIRLA", "CLOWN", "MATTO", "MATTA", "TARDO", "TARDA"]
@@ -203,6 +204,7 @@ def main():
                             gioco(nome_giocatore, parolaSceltaComputer) #va alla funzione gioco
                         elif tasto == "PAROLA DEL GIORNO":
                             running = False #così la schermata iniziale non c'è più, sennò la schermata di gioco si sovrapponeva a quella iniziale
+                            parolaSpeciale = True
                             nome_giocatore = nome() #salviamo il nome del giocatore
                             #SELEZIONE PAROLA DEL GIORNO - UNICA DIFFERENZA da gioco()
                             oggi = date.today().day
@@ -379,6 +381,8 @@ def gioco(nome_giocatore, parolaSceltaComputer):
                         elif tasto == "retry":
                             running = False
                             print("RIPROVA")
+                            if parolaSpeciale == False:
+                                parolaSceltaComputer = random.choice(ParoleComputer)
                             gioco(nome_giocatore, parolaSceltaComputer)
                         #se è un qualunque altro tasto
                         else:
