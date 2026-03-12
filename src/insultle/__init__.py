@@ -46,7 +46,7 @@ def nome():
     imgSfondo = pygame.image.load("src/insultle/sfondoINSULTLE.jpg") 
     imgSfondo = pygame.transform.scale(imgSfondo,(Larghezza_Schermo,Altezza_Schermo))
 
-    nome_giocatore = "" #stringa vuota in cui andrà agigunto il nome
+    nome_giocatore = "" #stringa vuota in cui andrà aggiunto il nome
 
     running = True
     
@@ -207,7 +207,7 @@ def main():
                             running = False #così la schermata iniziale non c'è più, sennò la schermata di gioco si sovrapponeva a quella iniziale
                             parolaSpeciale = True
                             nome_giocatore = nome() #salviamo il nome del giocatore
-                            #SELEZIONE PAROLA DEL GIORNO - UNICA DIFFERENZA da gioco()
+                            #SELEZIONE PAROLA DEL GIORNO 
                             oggi = date.today().day
                             if oggi -1 == 27: #se è il 28esimo giorno
                                 oggi = 14
@@ -220,7 +220,7 @@ def main():
                             
                             parolaSceltaComputer = ParoleComputer[(oggi-1)]
                             gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer) #va alla funzione gioco
-                            #parolaDelGiorno(nome_giocatore) #va alla funzione parola del giorno
+                            
         
         #aggiorno lo schermo
         pygame.display.flip()
@@ -329,6 +329,20 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
     
     running = True
     while running:
+                # ---------------- DISEGNO TIMER ----------------
+        #aggiorna e disegna il timer (solo se il gioco non è finito)
+        if not giocoFinito :
+            
+            #calcolo il tempo trascorso
+            tempoAttuale = (pygame.time.get_ticks() - tempo_inizio) // 1000
+            # // 1000 serve per trasformare i millisecondi in secondi0.
+        #creo il testo con il tempo
+        testoTimer = FontTimer.render(f"{tempoAttuale}s", True, (0, 0, 0))
+            
+        #disegno il timer in alto a sinistra dello schermo
+        schermo.blit(testoTimer, (50, 20))        
+
+        #pygame.display.flip()
         for event in pygame.event.get():
             
             if event.type == pygame.QUIT:
@@ -375,12 +389,10 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
                         #se clicco il tasto casa allora il gioco si interrompre e viene visualizzata la schermata principale
                         elif tasto == "casa":
                             running = False
-                            print("CASA")
                             main()
                         #se clicco il tasto riprova il gioco ricomincia da capo, la parola da indovinare cambia solo se non è la parola del giorno
                         elif tasto == "retry":
                             running = False
-                            print("RIPROVA")
                             if parolaSpeciale == False:
                                 parolaSceltaComputer = random.choice(ParoleComputer)
                             gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer)
@@ -392,28 +404,30 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
                                 listaParola.append(tasto)
 
             # ---------------- TASTIERA ----------------
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN: #se premo un tasto
                     
-                if event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_ESCAPE: #se il tasto è esc si chiude il gioco
                     running = False
                 
             if event.type == pygame.KEYDOWN and not giocoFinito:
 
                 if event.key == pygame.K_BACKSPACE and len(listaParola) > 0:
                     listaParola.pop()
-                
-                elif event.key == pygame.K_RETURN:
+                #se premo invio controlla che la parola sia lunga 5 caratteri e sia una parola accettabile
+                elif event.key == pygame.K_RETURN: 
                     parolaInserita = "".join(listaParola)
                     if len(listaParola) == 5 and parolaInserita in paroleAccettabili:
                         
                         tentativi.append(parolaInserita)
                         listaParola = []
-
+                        
                         # ---------------- CONTROLLO VITTORIA ----------------
+                        #se la parola è corretta il giocatore ha vinto
                         if parolaInserita == parolaSceltaComputer: 
                             vittoria(nome_giocatore,tempoAttuale) 
                                 
                         # ---------------- CONTROLLO SCONFITTA ----------------
+                        #se la parola è sbagliata e il giocatore ha usato tutti i suoi tentativi ha perso
                         elif len(tentativi) == maxTentativi:
                             sconfitta()
                 
@@ -493,20 +507,7 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
         # Aggiorno lo schermo
         pygame.display.flip()
 
-        # ---------------- DISEGNO TIMER ----------------
-        #aggiorna e disegna il timer (solo se il gioco non è finito)
-        if not giocoFinito :
-            
-            #calcolo il tempo trascorso
-            tempoAttuale = (pygame.time.get_ticks() - tempo_inizio) // 1000
-            # // 1000 serve per trasformare i millisecondi in secondi0.
-        #creo il testo con il tempo
-        testoTimer = FontTimer.render(f"{tempoAttuale}s", True, (0, 0, 0))
-            
-        #disegno il timer in alto a sinistra dello schermo
-        schermo.blit(testoTimer, (50, 20))        
 
-        pygame.display.flip()
 
     pygame.quit() #chiude Pygame quando il gioco termina
 
