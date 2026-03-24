@@ -1,2 +1,3 @@
-# INSULTLE
-progetto di Qian, Edo e Dafne.
+<p align="center">
+  ![Adobe Logo](/docs/contributor/assets/adobe_standard_logo.png "logo")
+</p>
