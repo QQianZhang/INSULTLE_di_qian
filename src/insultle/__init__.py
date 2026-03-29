@@ -14,6 +14,9 @@ from platformdirs import PlatformDirs
 #moduli del mio package
 from .resources import *
 
+# PROF: il codice (a parte le variabili globali e gli import)
+# PROF: doveva essere DENTRO la funzione main()!!!
+
 #inizializzazione di Pygame e del mixer audio
 pygame.init() #fondamentale per il gioco (inializza tutto)
 pygame.mixer.init() #fondamentale per i suoni
@@ -30,52 +33,53 @@ suonoVittoria = pygame.mixer.Sound( percorsoSuonoVittoria )
 suonoSconfitta.set_volume(0.7)
 suonoVittoria.set_volume(0.7)
 
-#variabili globali 
+#variabili globali
 giocoFinito = False
+# PROF: E quando cambia sta parola???
 parolaSceltaComputer = "" #cambia parola ogn volta che rinizia il gioco
 testo = "INSULTLE\nVi siete divertiti a giocare ad Insultle??? \nSe sì lasciate una bella recensione (10/10)\n" #testo standard che verrà sempre scritto
 
-#-------- NOME GIOCATORE, SFONDO E ALTRE SCRITTE ---------------- 
+#-------- NOME GIOCATORE, SFONDO E ALTRE SCRITTE ----------------
 def nome():
-    
+
     """
     Funzione che gestisce la schermata di inserimento del nome giocatore.
     Crea una finestra dove il giocatore può digitare il proprio nome.
     Restituisce il nome inserito quando si preme INVIO.
     """
-    
+
     Larghezza_Schermo = 822
     Altezza_Schermo = 745
-    schermo = pygame.display.set_mode((Larghezza_Schermo, Altezza_Schermo)) 
+    schermo = pygame.display.set_mode((Larghezza_Schermo, Altezza_Schermo))
     pygame.display.set_caption("Insultle")
     FontLettere = pygame.font.SysFont('Impact', 60)
-    
+
     #carica l'immagine di sfondo in base alle variabili sopra scritte
     percorsoImgSfondo = get_image("sfondoINSULTLE.jpg")
-    imgSfondo = pygame.image.load( percorsoImgSfondo ) 
+    imgSfondo = pygame.image.load( percorsoImgSfondo )
     imgSfondo = pygame.transform.scale(imgSfondo,(Larghezza_Schermo,Altezza_Schermo))
 
     nome_giocatore = "" #stringa vuota in cui andrà aggiunto il nome
 
     running = True
-    
+
     while running:
         #esami tutto ciò che succede
         for event in pygame.event.get():
-            
+
             #se è la X rossa in alto a destra il gioco finisce
             if event.type == pygame.QUIT:
                 #finisce il gioco
                 running = False
                 return ""
-            
+
             #se l'evento è un tasto premuto analizzo quale tasto è
             if event.type == pygame.KEYDOWN:
-                
+
                 #tasto invio
                 if event.key == pygame.K_RETURN:
                     return nome_giocatore   #restituisce il nome
-                
+
                 #tasto canc
                 elif event.key == pygame.K_BACKSPACE:
                     nome_giocatore = nome_giocatore[:-1] #cancella l'ultimo carattere
@@ -99,7 +103,7 @@ def nome():
         schermo.blit(testo_nome,(rect_nome.x+10,rect_nome.y+10))
 
         pygame.display.flip()
-    
+
 #---------------- VITTORIA ----------------
 def vittoria(nome_giocatore,tempo):
     """
@@ -112,12 +116,14 @@ def vittoria(nome_giocatore,tempo):
     pygame.mixer.music.stop() #fermo la musica di sottofondo
     suonoVittoria.play() #metto il fuono di vittoria
     giocoFinito = True #modifico la variabile globale
+
+    # PROF: Diventa una operazione inutile se non lo comunichi all'utente e se qualcun'altro non può vederlo...
     with open(percorsoFileVincente, "w") as file: #apro il file
         #             testo predefinito
         file.write(f"{testo}BRAVO {nome_giocatore} HAI VINTO!! ci hai messo: {tempo}sec \n")
         #lo apro in w perchè non voglio un elenco continuo di "vinto" e "perso"
 
-#---------------- SCONFITTA ----------------   
+#---------------- SCONFITTA ----------------
 def sconfitta():
     """
     In caso di sconfitta:
@@ -129,7 +135,7 @@ def sconfitta():
     global parolaSceltaComputer
     pygame.mixer.music.stop() #fermo la musica di sottofondo
     suonoSconfitta.play() #metto il fuono di sconfitta
-    giocoFinito = True  #modifico la variabile globale   
+    giocoFinito = True  #modifico la variabile globale
     with open(percorsoFileVincente, "w") as file: #apro il file
         #             testo predefinito
         file.write(f"{testo} PECCATO, ritenta che sarai più fortunato!!! \nla parola era: {parolaSceltaComputer} \n")
@@ -137,7 +143,7 @@ def sconfitta():
 
 #---------------- SCHERMATA INIZIALE ----------------
 def main():
-    
+
     """
     Mostra la schermata principale con le regole e due pulsanti:
     - GIOCA: avvia una partita normale con parola casuale
@@ -147,20 +153,20 @@ def main():
     #imposto le variabili per lo sfondo
     Larghezza_Schermo = 822
     Altezza_Schermo = 745
-    schermo = pygame.display.set_mode((Larghezza_Schermo, Altezza_Schermo)) 
-    pygame.display.set_caption("Insultle") 
+    schermo = pygame.display.set_mode((Larghezza_Schermo, Altezza_Schermo))
+    pygame.display.set_caption("Insultle")
     FontLettere = pygame.font.SysFont('Impact', 60)
-    
+
     #parole da indovinare
     ParoleComputer = ["RINCO", "SCEMO", "SCEMA", "TONTO", "TONTA", "PAZZO", "PAZZA", "LENTO", "LENTA", "EBETE", "PIGRO", "PIGRA", "ROZZO", "ROZZA", "FOLLE", "MOLLE", "ASINO", "CAPRA", "CAGNA", "FESSO", "VERME", "PIRLA", "CLOWN", "MATTO", "MATTA", "TARDO", "TARDA"]
     #carico le immagini
     percorsoImgSfondo = get_image("sfondoBIANCO.jfif")
-    imgSfondo = pygame.image.load(percorsoImgSfondo) 
+    imgSfondo = pygame.image.load(percorsoImgSfondo)
     imgSfondo = pygame.transform.scale(imgSfondo,(Larghezza_Schermo,Altezza_Schermo))
     percorsoImgSfondo = get_image("RegoleInsultle.png")
-    imgRegole = pygame.image.load(percorsoImgSfondo) 
+    imgRegole = pygame.image.load(percorsoImgSfondo)
     imgRegole = pygame.transform.scale(imgRegole,(400,400))
-    
+
     #creo due tasti che mi portano al gioco vero e proprio
     tasti_mouse = {
         "GIOCA": pygame.Rect(80,510, 170,70),
@@ -185,7 +191,7 @@ def main():
             #rect = posizione e dimensione (x, y, larghezza, altezza)
             testo = FontLettere.render(tasto, True, "black")
             schermo.blit(testo, (rect.x + 10, rect.y + 5)) #posizione leggermente spostata dentro il rettangolo
-        
+
         #analizzo ogni evento
         for event in pygame.event.get():
 
@@ -193,14 +199,14 @@ def main():
             if event.type == pygame.QUIT:
                 #finisce il gioco
                 running = False
-            
+
             #se clicchi un tasto
             if event.type == pygame.KEYDOWN:
                 #se è il tasto esc
                 if event.key == pygame.K_ESCAPE:
                     #finisce il gioco
                     running = False
-                    
+
             #se clicco un tasto del mouse
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos_mouse = pygame.mouse.get_pos() #prende le coordinate (x, y) del punto dove ha cliccato
@@ -222,7 +228,7 @@ def main():
                             nome_giocatore = nome() #salviamo il nome del giocatore
                             if nome_giocatore == "":
                                 break
-                            #SELEZIONE PAROLA DEL GIORNO 
+                            #SELEZIONE PAROLA DEL GIORNO
                             oggi = date.today().day
                             if oggi -1 == 27: #se è il 28esimo giorno
                                 oggi = 14
@@ -232,17 +238,17 @@ def main():
                                 oggi = 16
                             elif oggi -1 == 30: #se è il 31esimo giorno
                                 oggi = 17
-                            
+
                             parolaSceltaComputer = ParoleComputer[(oggi-1)]
                             gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer) #va alla funzione gioco
-                            
-        
+
+
         #aggiorno lo schermo
         pygame.display.flip()
-    
-#---------------- GIOCO ----------------  
+
+#---------------- GIOCO ----------------
 def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
-    
+
     """
     Funzione principale del gioco:
     - Gestisce la logica di Wordle con parole di 5 lettere
@@ -250,37 +256,37 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
     - Mostra feedback colorati (verde: lettera giusta posizione giusta, giallo: lettera giusta posizione sbagliata, rosso: lettera sbagliata)
     - Include timer, musica e gestione tentativi
     """
-    
+
     #mi riferisco sempre alle variabili globali dell'intero gioco
     global giocoFinito
 
 
     #global parolaSceltaComputer
-    
+
     giocoFinito = False
-    
+
     #variabili sfondo
     Larghezza_Schermo = 822
     Altezza_Schermo = 745
-    schermo = pygame.display.set_mode((Larghezza_Schermo, Altezza_Schermo)) 
-    pygame.display.set_caption("Insultle") 
+    schermo = pygame.display.set_mode((Larghezza_Schermo, Altezza_Schermo))
+    pygame.display.set_caption("Insultle")
 
     #carico sfondo
     PercorsoImgSfondo = get_image("sfondoINSULTLE.jpg")
-    imgSfondo = pygame.image.load(PercorsoImgSfondo) 
+    imgSfondo = pygame.image.load(PercorsoImgSfondo)
     imgSfondo = pygame.transform.scale(imgSfondo,(Larghezza_Schermo,Altezza_Schermo))
     #carico immagine della casa che porterà il giocatore al menù iniziale
     PercorsoImgCasa = get_image("casa.png")
-    imgCasa = pygame.image.load(PercorsoImgCasa) 
+    imgCasa = pygame.image.load(PercorsoImgCasa)
     imgCasa = pygame.transform.scale(imgCasa,(50,50))
     #carico immagine tasto retry che fa ripartire il gioco da capo
     PercorsoImgRetry = get_image("retry.jpg")
-    imgRetry = pygame.image.load(PercorsoImgRetry) 
+    imgRetry = pygame.image.load(PercorsoImgRetry)
     imgRetry = pygame.transform.scale(imgRetry,(50,50))
 
     FontLettere = pygame.font.SysFont('Impact', 60)
-    
-   
+
+
     #apre il file vocabolario (le parole accettabili) e togli lo spazio finale da ogni parola
     percorsoFileVocabolario = get_data("Vocabolario.txt")
     paroleAccettabili = []
@@ -289,9 +295,9 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
         parola = riga.strip().upper() # pulisco la stringa da \n e la rendo maiuscola
         paroleAccettabili.append(parola)
     fileVocabolario.close()
-    
-    
-    
+
+
+
     #avvia la musica di sottofondo
     PercorsoSottofondo = get_sound("suonoSottofondo.mp3")
     sottofonodo = pygame.mixer.music.load(PercorsoSottofondo)
@@ -301,7 +307,7 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
     # ---------------- VARIABILI ----------------
     listaParola = []
     tentativi = []
-    
+
     maxTentativi = 6
 
 # ---------------- TASTIERA CLICCABILE ----------------
@@ -345,29 +351,29 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
     }
 
 # ---------------- TIMER ----------------
-    FontTimer = pygame.font.SysFont('Impact', 40)  
+    FontTimer = pygame.font.SysFont('Impact', 40)
     tempo_inizio = pygame.time.get_ticks()
     tempoAttuale = 0
     # Il timer inizia il momento esatto (in millisecondi) in cui parte la partita
-    
+
     running = True
     while running:
                 # ---------------- DISEGNO TIMER ----------------
         #aggiorna e disegna il timer (solo se il gioco non è finito)
         if not giocoFinito :
-            
+
             #calcolo il tempo trascorso
             tempoAttuale = (pygame.time.get_ticks() - tempo_inizio) // 1000
             # // 1000 serve per trasformare i millisecondi in secondi0.
         #creo il testo con il tempo
         testoTimer = FontTimer.render(f"{tempoAttuale}s", True, (0, 0, 0))
-            
+
         #disegno il timer in alto a sinistra dello schermo
-        schermo.blit(testoTimer, (50, 20))        
+        schermo.blit(testoTimer, (50, 20))
 
         #pygame.display.flip()
         for event in pygame.event.get():
-            
+
             if event.type == pygame.QUIT:
                 running = False
 
@@ -378,7 +384,7 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
                 #scorre tutte le lettere e i rettangoli presenti nel dizionario e se l'indicatore si trova all'interno del rettangolo entra nel ciclo if
                 for tasto, rect in tasti_mouse.items():
                     if rect.collidepoint(pos_mouse):
-                        
+
                         #se il mouse si trova sopra il tasto invio
                         if tasto == "INVIO":
                             if giocoFinito:
@@ -391,17 +397,17 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
                                 tentativi.append(parolaInserita)
                                 #e svuotiamo la lista delle lettere
                                 listaParola = []
-                                
+
                                 #se la parola è quella scelta dal pc
                                 if parolaInserita == parolaSceltaComputer:
                                     #chiamo al funzione vittoria
                                     vittoria(nome_giocatore, tempoAttuale)
-                                
+
                                 #se sono arrivata al massimo dei tentativi
                                 elif len(tentativi) == maxTentativi:
                                     #ho perso, chiamo la funzione sconfitta
                                     sconfitta()
-                                    
+
                         #se il tasto è canc
                         elif tasto == "CANC":
                             if giocoFinito:
@@ -428,32 +434,32 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
 
             # ---------------- TASTIERA ----------------
             if event.type == pygame.KEYDOWN: #se premo un tasto
-                    
+
                 if event.key == pygame.K_ESCAPE: #se il tasto è esc si chiude il gioco
                     running = False
-                
+
             if event.type == pygame.KEYDOWN and not giocoFinito:
 
                 if event.key == pygame.K_BACKSPACE and len(listaParola) > 0:
                     listaParola.pop()
                 #se premo invio controlla che la parola sia lunga 5 caratteri e sia una parola accettabile
-                elif event.key == pygame.K_RETURN: 
+                elif event.key == pygame.K_RETURN:
                     parolaInserita = "".join(listaParola)
                     if len(listaParola) == 5 and parolaInserita in paroleAccettabili:
-                        
+
                         tentativi.append(parolaInserita)
                         listaParola = []
-                        
+
                         # ---------------- CONTROLLO VITTORIA ----------------
                         #se la parola è corretta il giocatore ha vinto
-                        if parolaInserita == parolaSceltaComputer: 
-                            vittoria(nome_giocatore,tempoAttuale) 
-                                
+                        if parolaInserita == parolaSceltaComputer:
+                            vittoria(nome_giocatore,tempoAttuale)
+
                         # ---------------- CONTROLLO SCONFITTA ----------------
                         #se la parola è sbagliata e il giocatore ha usato tutti i suoi tentativi ha perso
                         elif len(tentativi) == maxTentativi:
                             sconfitta()
-                
+
                 #se premo altro
                 else:
                     #associo il codice di quel tasto ad un carattere
@@ -462,8 +468,8 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
                     if caratterePremuto.upper() in "QWERTYUIOPASDFGHJKLZXCVBNM" and len(listaParola) < 5:
                         #la aggiungp
                         listaParola.append(caratterePremuto.upper())
-                        
-            #permette di rigiocare premendo R dopo la fine della partita            
+
+            #permette di rigiocare premendo R dopo la fine della partita
             if event.type == pygame.KEYDOWN and giocoFinito : #è implicito che "and giocoFinito" significa che giocoFinito == True
                 #se premo il tasto r (restart)
                 if event.key == pygame.K_r:
@@ -471,7 +477,7 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
                     running = False
                     #richiamo la funzione gioco perchè deve ricominciare
                     gioco(nome_giocatore,parolaSceltaComputer, parolaSpeciale, ParoleComputer)
-            
+
         #mostro lo sfondo
         schermo.blit(imgSfondo, (0, 0))
         schermo.blit(imgCasa,(650,20))
@@ -488,7 +494,7 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
                 if parola[i] == segreta[i]: #se nella lista della parola del pc e dell'utente abbiamo la stessa lettera
                                             #ad una stessa pos
                     colori[i] = (0, 200, 0) #verde
-                    segreta[i] = "" #rimpiazzo l'elemento della lista con il nulla, 
+                    segreta[i] = "" #rimpiazzo l'elemento della lista con il nulla,
 
             # Giallo / Rosso
             for i in range(5):
@@ -501,10 +507,10 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
 
             # Disegna caselle
             for num in range(5):
-                #calcolo le posizioni 
+                #calcolo le posizioni
                 coordinataX = 200 + num * 92
                 coordinataY = 20 + riga * 77
-                #disegno il rect colorato alle pos date 
+                #disegno il rect colorato alle pos date
                 pygame.draw.rect(schermo, colori[num], (coordinataX, coordinataY, 70, 70))
                 #ci scrivo la lettera sopra
                 testo = FontLettere.render(parola[num], True, "black")
@@ -512,9 +518,9 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
 
         # ---------------- DISEGNO PAROLA IN CORSO ----------------
         # Disegno la parola in corso (listaParola)
-        rigaAttuale = len(tentativi) #trova la linea in cui stiamo scrivendo 
+        rigaAttuale = len(tentativi) #trova la linea in cui stiamo scrivendo
         for num in range(len(listaParola)):
-            #calcolo le coordinate 
+            #calcolo le coordinate
             coordinataX = 200 + num * 92
             coordinataY = 20 + rigaAttuale * 77
             #disegno rect bianco per la casella
@@ -535,7 +541,7 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
     pygame.quit() #chiude Pygame quando il gioco termina
 
 # #------------------------------------
-    
+
 if __name__ == "__main__":
     main() #avvia la schermata iniziale
     #pygame.quit() #chiude Pygame quando il gioco termina
