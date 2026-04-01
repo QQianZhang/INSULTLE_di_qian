@@ -61,16 +61,16 @@ def nome():
 
     nome_giocatore = "" #stringa vuota in cui andrà aggiunto il nome
 
-    running = True
+    runningNome = True
 
-    while running:
+    while runningNome:
         #esami tutto ciò che succede
         for event in pygame.event.get():
 
             #se è la X rossa in alto a destra il gioco finisce
             if event.type == pygame.QUIT:
                 #finisce il gioco
-                running = False
+                runningNome = False
                 return ""
 
             #se l'evento è un tasto premuto analizzo quale tasto è
@@ -173,8 +173,8 @@ def main():
         "PAROLA DEL GIORNO": pygame.Rect(330,510, 460,70),
     }
 
-    running = True
-    while running:
+    runningMain = True
+    while runningMain:
         #mostro le regole e lo sfondo bianco
         schermo.blit(imgSfondo, (0, 0))
         schermo.blit(imgRegole, (200, 50))
@@ -198,14 +198,14 @@ def main():
             #se clicco la X in altro a drestra
             if event.type == pygame.QUIT:
                 #finisce il gioco
-                running = False
+                runningMain = False
 
             #se clicchi un tasto
             if event.type == pygame.KEYDOWN:
                 #se è il tasto esc
                 if event.key == pygame.K_ESCAPE:
                     #finisce il gioco
-                    running = False
+                    runningMain = False
 
             #se clicco un tasto del mouse
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -215,7 +215,7 @@ def main():
                     if rect.collidepoint(pos_mouse): #quando trova quello che corrisponde alla posizione cliccata
                         if tasto == "GIOCA":
                             parolaSpeciale = False
-                            running = False #così la schermata iniziale non c'è più, sennò la schermata di gioco si sovrapponeva a quella iniziale
+                            runningMain = False #così la schermata iniziale non c'è più, sennò la schermata di gioco si sovrapponeva a quella iniziale
                             nome_giocatore = nome() #salviamo il nome del giocatore
                             if nome_giocatore == "":
                                 break
@@ -223,7 +223,7 @@ def main():
                             parolaSceltaComputer = random.choice(ParoleComputer)
                             gioco(nome_giocatore, parolaSceltaComputer,parolaSpeciale, ParoleComputer) #va alla funzione gioco
                         elif tasto == "PAROLA DEL GIORNO":
-                            running = False #così la schermata iniziale non c'è più, sennò la schermata di gioco si sovrapponeva a quella iniziale
+                            runningMain = False #così la schermata iniziale non c'è più, sennò la schermata di gioco si sovrapponeva a quella iniziale
                             parolaSpeciale = True
                             nome_giocatore = nome() #salviamo il nome del giocatore
                             if nome_giocatore == "":
@@ -356,8 +356,8 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
     tempoAttuale = 0
     # Il timer inizia il momento esatto (in millisecondi) in cui parte la partita
 
-    running = True
-    while running:
+    runningGioco = True
+    while runningGioco:
                 # ---------------- DISEGNO TIMER ----------------
         #aggiorna e disegna il timer (solo se il gioco non è finito)
         if not giocoFinito :
@@ -375,7 +375,7 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
-                running = False
+                runningGioco = False
 
             # ---------------- MOUSE ----------------
             #se viene fatto click con il mouse ricavo la posizione di dove si trovava l'indicatore al momento del click
@@ -417,11 +417,11 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
                                 listaParola.pop() #eliminiamo l'ultima lettera inserita
                         #se clicco il tasto casa allora il gioco si interrompre e viene visualizzata la schermata principale
                         elif tasto == "casa":
-                            running = False
+                            runningGioco = False
                             main()
                         #se clicco il tasto riprova il gioco ricomincia da capo, la parola da indovinare cambia solo se non è la parola del giorno
                         elif tasto == "retry":
-                            running = False
+                            runningGioco = False
                             if parolaSpeciale == False:
                                 parolaSceltaComputer = random.choice(ParoleComputer)
                             gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer)
@@ -436,7 +436,7 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
             if event.type == pygame.KEYDOWN: #se premo un tasto
 
                 if event.key == pygame.K_ESCAPE: #se il tasto è esc si chiude il gioco
-                    running = False
+                    runningGioco = False
 
             if event.type == pygame.KEYDOWN and not giocoFinito:
 
@@ -474,7 +474,7 @@ def gioco(nome_giocatore, parolaSceltaComputer, parolaSpeciale, ParoleComputer):
                 #se premo il tasto r (restart)
                 if event.key == pygame.K_r:
                     #gioco si interrompe
-                    running = False
+                    runningGioco = False
                     #richiamo la funzione gioco perchè deve ricominciare
                     gioco(nome_giocatore,parolaSceltaComputer, parolaSpeciale, ParoleComputer)
 
